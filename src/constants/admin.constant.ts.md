@@ -1,30 +1,31 @@
-## Admins Data Model
+## Admins Data 
 
-### Table of Contents
-- [Introduction](#introduction)
+**Table of Contents**
+
+- [Overview](#overview)
 - [Data Structure](#data-structure)
-- [Data Examples](#data-examples)
+- [Example Data](#example-data)
 
-### Introduction 
+### Overview 
 
-This file defines the initial data for the `Admins` array, used for managing administrative users in the application.
+This code defines a list of predefined administrator users for the application. It defines a list of administrators with their respective full names, email addresses, passwords, and roles.
 
 ### Data Structure
 
-The `Admins` array contains objects representing individual administrator accounts. Each object has the following properties:
+The `Admins` variable is an array of objects, each representing an administrator user. Each object has the following properties:
 
-| Property Name | Data Type | Description |
+| Property | Type | Description |
 |---|---|---|
-| `fullName` | String | The full name of the administrator. |
-| `email` | String | The email address of the administrator. |
-| `password` | String | The password of the administrator. |
-| `role` | Role | The role of the administrator, defined in the `Role` enum. |
+| `fullName` | `string` | The full name of the administrator. |
+| `email` | `string` | The email address of the administrator. |
+| `password` | `string` | The password of the administrator. |
+| `role` | `Role` | The role of the administrator, which is defined in the `role.enum` file. |
 
-### Data Examples
+### Example Data
 
-The `Admins` array is initialized with the following data:
+The code includes one example administrator:
 
-| Property Name | Value |
+| Property | Value |
 |---|---|
 | `fullName` | Investia Admin |
 | `email` | admin@gmail.com |

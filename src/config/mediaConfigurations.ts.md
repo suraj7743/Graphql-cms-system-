@@ -1,32 +1,56 @@
-## Media Configurations Documentation 
+## Media Configuration
 
-**Table of Contents** 
-* [Overview](#overview)
-* [Configuration Interface](#configuration-interface)
-* [Media Configuration Map](#media-configuration-map)
+**Table of Contents**
 
-### Overview 
+- [Introduction](#introduction)
+- [Constants](#constants)
+- [Data Structures](#data-structures)
+- [Media Configurations](#media-configurations)
 
-This module defines configurations for media uploads, including maximum file size and supported extensions. The configuration is mapped by the `MediaType` enum, allowing for flexible and specific settings for different media types.
+### Introduction
 
-### Configuration Interface
+This module defines and manages media configurations for different media types. 
 
-The `MediaConfig` interface defines the structure for media configurations:
+### Constants
 
-| Property | Type | Description |
-|---|---|---|
-| `maxFileSize` | `number` | The maximum allowed file size in bytes. |
-| `supportedExtensions` | `string[]` | An array of supported file extensions. |
+The following constants are used in this module:
 
-### Media Configuration Map
+| Constant        | Description                                                                                                                    |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `MediaType`     | An enum defining different media types supported by the system.                                                               |
+| `maxFileSize`   | The maximum allowed file size for a given media type.                                                                           |
+| `supportedExtensions` | An array of supported file extensions for a given media type.                                                               |
 
-The `MediaConfigurations` object maps each `MediaType` to its corresponding `MediaConfig`:
+### Data Structures
 
-| MediaType | maxFileSize | supportedExtensions |
-|---|---|---|
-| `MediaType.PROPOSAL` | 3 * 1024 * 1024 (3MB) | `["jpg", "jpeg", "png"]` |
-| `MediaType.USER_AVATAR` | 3 * 1024 * 1024 (3MB) | `["jpg", "jpeg", "png"]` |
-| `MediaType.USER_DOCUMENT` | 3 * 1024 * 1024 (3MB) | `["jpg", "jpeg", "png"]` |
-| `MediaType.LOGO` | 3 * 1024 * 1024 (3MB) | `["jpg", "jpeg", "png"]` |
+The following data structures are used in this module:
 
-**Note:** All media types currently have a maximum file size of 3MB and support the following extensions: `jpg`, `jpeg`, and `png`. 
+| Data Structure   | Description                                                                                                                                                                                                                                                          |
+|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `MediaConfig`     | Defines a configuration for a specific media type. It includes two properties: `maxFileSize` and `supportedExtensions`.                                                                                                                                                                      |
+| `MediaConfigurations` | An object containing `MediaConfig` objects for each defined `MediaType`. It allows accessing specific media configurations based on their type.                                                                                                                              |
+
+### Media Configurations
+
+The `MediaConfigurations` object maps each `MediaType` to a corresponding `MediaConfig`.  Currently, the following media configurations are defined:
+
+| Media Type | Maximum File Size (MB) | Supported Extensions |
+|------------|--------------------------|-----------------------|
+| Proposal  | 3                         | jpg, jpeg, png       |
+| User Avatar| 3                         | jpg, jpeg, png       |
+| User Document | 3                         | jpg, jpeg, png       |
+| Logo       | 3                         | jpg, jpeg, png       |
+
+**Example Usage:**
+
+```javascript
+import MediaConfigurations from './media.config';
+
+const proposalConfig = MediaConfigurations[MediaType.PROPOSAL]; // Get configuration for proposals
+
+// Check if a file extension is supported
+const isExtensionSupported = proposalConfig.supportedExtensions.includes('png'); 
+
+// Check if a file is within the allowed size
+const fileIsWithinSizeLimit = fileSizeInBytes <= proposalConfig.maxFileSize; 
+``` 

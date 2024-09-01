@@ -2,44 +2,67 @@
 
 ### Table of Contents
 
-* [Overview](#overview)
-* [Imports](#imports)
-* [TypeGraphQL Class](#typegraphql-class)
-* [Schema() Method](#schema-method)
+* [Introduction](#introduction)
+* [Schema Building](#schema-building)
+* [Resolver Import](#resolver-import)
+* [Schema Configuration](#schema-configuration)
 
-### Overview 
+### Introduction 
 
-This code defines a TypeGraphQL schema using the `buildSchema` function. The schema includes resolvers for various functionalities like administration, analytics, authentication, media uploads, user management, and data dashboards.
+This code defines a class `TypeGraphQL` responsible for building the GraphQL schema for the application. This schema acts as the blueprint for the data accessible through GraphQL queries and mutations.
 
-### Imports
-
-The code imports the following dependencies:
-
-| Dependency | Description |
-|---|---|
-| `buildSchema` | From `type-graphql` package, used to construct the GraphQL schema. |
-| `AdminResolver` | Resolver for admin-related functionalities. |
-| `AnalyticsResolver` | Resolver for analytics-related functionalities. |
-| `AuthResolver` | Resolver for authentication-related functionalities. |
-| `UploadResolver` | Resolver for media upload functionalities. |
-| `UserResolver` | Resolver for user management functionalities. |
-| `DataDashboardResolver` | Resolver for data dashboard functionalities. |
-
-### TypeGraphQL Class
-
-The code defines a class named `TypeGraphQL` which encapsulates the schema definition.
-
-### Schema() Method
+### Schema Building 
 
 The `Schema()` method is responsible for generating the GraphQL schema. 
 
-**Functionality:**
+```typescript
+  async Schema() {
+    return await buildSchema({
+      // ... Schema configuration
+    });
+  }
+```
 
-1. **Resolver Registration:** The `buildSchema` function takes an object with the `resolvers` property. This property is an array containing all the resolvers that will be included in the schema. 
-2. **Date Scalar Mode:** The `dateScalarMode` property is set to `isoDate`. This means that dates will be represented in ISO 8601 format.
-3. **Validation:** The `validate` property is set to `false`, indicating that validation will not be performed during schema generation.
-4. **Schema File Emission:** The `emitSchemaFile` property is set to `false`, indicating that the schema will not be emitted to a file.
+The `buildSchema()` function from the `type-graphql` library is used to create the schema. It takes an object containing schema configuration details.
 
-**Output:**
+### Resolver Import
 
-The `Schema()` method returns a promise that resolves to the generated GraphQL schema. 
+The `resolvers` array lists all the GraphQL resolvers responsible for handling data requests and mutations.  Each resolver class defines methods that map to specific GraphQL operations.
+
+```typescript
+      resolvers: [
+        AdminResolver,
+        AnalyticsResolver,
+        AuthResolver,
+        UploadResolver,
+        UserResolver,
+        DataDashboardResolver,
+      ],
+```
+
+The resolvers imported include:
+
+* **AdminResolver**: Handles operations related to administrative tasks. 
+* **AnalyticsResolver**: Enables data analysis and reporting.
+* **AuthResolver**: Manages user authentication and authorization.
+* **UploadResolver**: Handles media uploads and file management.
+* **UserResolver**: Provides access to user data and operations.
+* **DataDashboardResolver**: Offers a user interface for data visualization and exploration.
+
+### Schema Configuration
+
+The `buildSchema()` function takes several configuration options, including:
+
+| Option                  | Description                                                                                           |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `dateScalarMode`        | Specifies how dates are handled in the schema. Set to `isoDate` for ISO 8601 date format.      |
+| `validate`             | Enables/disables schema validation. Set to `false` to disable validation.                       |
+| `emitSchemaFile`       | Determines whether to emit a schema file. Set to `false` to prevent schema file generation.   |
+
+```typescript
+      dateScalarMode: "isoDate",
+      validate: false,
+      emitSchemaFile: false,
+```
+
+This configuration creates a schema without validation and doesn't generate a separate schema file. 

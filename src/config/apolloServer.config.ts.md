@@ -1,41 +1,74 @@
 ## Apollo Server Configuration 
 
-**Table of Contents:**
+**Table of Contents**
+* [Overview](#overview)
+* [Dependencies](#dependencies)
+* [Apollo Class](#apollo-class)
+    * [server Method](#server-method)
 
-- [Introduction](#introduction)
-- [Configuration](#configuration)
-- [Error Handling](#error-handling)
-- [Plugins](#plugins)
+### Overview
 
-### Introduction 
-This code defines a class named `Apollo` that provides an asynchronous method `server` for configuring and initializing an Apollo server. The `server` method takes an `httpServer` instance as input and returns a new `ApolloServer` instance. The code utilizes the following external libraries:
+This file defines the configuration for the Apollo Server. 
 
-* **@apollo/server**: For defining the GraphQL server.
-* **@apollo/server/plugin/drainHttpServer**: For gracefully shutting down the server.
-* **http**: For creating and handling HTTP requests.
-* **TypeGraphQL**: For defining GraphQL schema and resolvers.
-* **env.config**: For loading environment variables.
-* **customFormatError**: For customizing error responses.
+### Dependencies
 
-### Configuration
+| Dependency | Description |
+|---|---|
+| `Environment` |  Enum containing the different environments for the application. |
+| `ApolloServer` | Apollo Server class. |
+| `ApolloServerPluginDrainHttpServer` | Plugin for draining the HTTP server. |
+| `http` | Node.js HTTP module. |
+| `DotenvConfiguration` | Configuration for environment variables. |
+| `TypeGraphQL` | TypeGraphQL configuration class. |
+| `customFormatError` | Function for formatting errors. |
 
-The `server` method creates an `ApolloServer` instance with the following configuration options:
+### Apollo Class
 
-| Option                 | Description                                                                                                                                                                                                                                                                                                                                            | Value                                                                                                                                 |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `schema`               | The GraphQL schema to be used by the server. This is generated asynchronously using the `TypeGraphQL` class.                                                                                                                                                                                                                               | `await new TypeGraphQL().Schema()`                                                                                                |
-| `csrfPrevention`       | Enables or disables Cross-Site Request Forgery (CSRF) protection.                                                                                                                                                                                                                                                                                                      | `false`                                                                                                                              |
-| `introspection`        | Enables or disables introspection queries. This allows clients to inspect the schema and its types.                                                                                                                                                                                                                                                                       | `true`                                                                                                                               |
-| `includeStacktraceInErrorResponses` | Includes stack traces in error responses. This is useful for debugging purposes but can expose sensitive information in production environments. It is set to `true` in development and `false` in other environments.                                                                                                                                     | `DotenvConfiguration.NODE_ENV === Environment.DEVELOPMENT ? true : false`                                                              |
-| `formatError`         | A function that formats error responses before they are sent to the client. This function uses the `customFormatError` function to customize the error response.                                                                                                                                                                                            | `(formattedError, error) => { ... }`                                                                                               |
-| `plugins`              | An array of plugins to use with the server. The `ApolloServerPluginDrainHttpServer` plugin is used to gracefully shut down the server when it receives a `SIGTERM` signal.                                                                                                                                                                                           | `[ApolloServerPluginDrainHttpServer({ httpServer })]`                                                                             |
+The `Apollo` class provides the functionality for creating an Apollo Server instance.
 
-### Error Handling
+#### server Method
 
-The `formatError` function logs the formatted error to the console and returns a custom error response using the `customFormatError` function. This approach provides a consistent error handling mechanism and ensures that sensitive information is not exposed to the client.
+```typescript
+  async server(
+    httpServer: http.Server<
+      typeof http.IncomingMessage,
+      typeof http.ServerResponse
+    >
+  ) {
+    return new ApolloServer({
+      schema: await new TypeGraphQL().Schema(),
+      csrfPrevention: false,
+      introspection: true,
+      // DotenvConfiguration.NODE_ENV === Environment.DEVELOPMENT ? true : false,
+      includeStacktraceInErrorResponses:
+        DotenvConfiguration.NODE_ENV === Environment.DEVELOPMENT ? true : false,
+      formatError: (formattedError, error) => {
+        console.log(
+          "\xf0\x9f\x9a\x80 ~ file: apolloServer.config.ts:22 ~ Apollo ~ server ~ formattedError:",
+          formattedError
+        );
+        return customFormatError(formattedError);
+      },
+      plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    });
+  }
+```
 
-### Plugins
+This method takes an HTTP server as an argument and returns a new Apollo Server instance. 
 
-The `ApolloServerPluginDrainHttpServer` plugin is used to gracefully shut down the server when it receives a `SIGTERM` signal. This ensures that the server can handle requests properly before exiting.
+**Key Configurations:**
 
-This configuration enables a robust and well-configured Apollo server that can be used for various GraphQL applications. The code demonstrates best practices for error handling and server shutdown, ensuring a smooth and reliable application. 
+| Configuration | Description |
+|---|---|
+| `schema` | The GraphQL schema for the application. |
+| `csrfPrevention` |  Whether to enable CSRF prevention.  Set to `false` for this implementation. |
+| `introspection` |  Whether to enable introspection. Set to `true` for this implementation. |
+| `includeStacktraceInErrorResponses` | Whether to include the stacktrace in error responses. This is only enabled in development mode. |
+| `formatError` | Custom error formatter. This logs the error to the console and then calls `customFormatError` to format the error for the client. |
+| `plugins` |  Array of plugins for the Apollo Server. This implementation uses the `ApolloServerPluginDrainHttpServer` plugin to drain the HTTP server. |
+
+**Notes:**
+
+* The `includeStacktraceInErrorResponses` option is only set to `true` in development mode to help with debugging.
+* The `formatError` function logs the error to the console before formatting it for the client. This can be helpful for debugging.
+* The `ApolloServerPluginDrainHttpServer` plugin is used to gracefully shutdown the HTTP server when the Apollo Server is closed.
