@@ -1,66 +1,54 @@
-## Logger Configuration 
+## Logger 🪵
 
-**Table of Contents**
+This document provides an overview of the logger implementation.
+
+### Table of Contents
 
 - [Introduction](#introduction)
 - [Configuration](#configuration)
-  - [Levels](#levels)
-  - [Log Level](#log-level)
-  - [Colors](#colors)
-  - [Format](#format)
-  - [Transports](#transports)
+- [Usage](#usage)
 
-### Introduction 
+### Introduction
 
-This code defines a logger configuration using the `winston` library for logging purposes in a Node.js application. The logger is designed to handle different log levels, format log messages, and write logs to both the console and files.
+This code implements a logging system using the `winston` library. The logger is configured to log messages to the console and to file. 
 
 ### Configuration
 
-#### Levels
+The logger is configured to use the following:
 
-The logger utilizes the following log levels:
+- **Levels:** 
+    - `error`: 0 
+    - `warn`: 1 
+    - `info`: 2 
+    - `http`: 3 
+    - `debug`: 4
+- **Level:** The log level is determined by the environment. If the environment is set to `development`, the log level is set to `debug`. Otherwise, the log level is set to `warn`.
+- **Colors:** The logger uses colors to distinguish between different log levels.
+- **Format:** The logger uses the following format for log messages:
+    - `[timestamp]` `[level]` `[message]`
 
-| Level | Description |
-|---|---|
-| `error` | Indicates an error condition. |
-| `warn` | Indicates a warning. |
-| `info` | Provides general information about the application. |
-| `http` | Logs HTTP requests and responses. |
-| `debug` | Provides detailed debugging information. |
+### Usage
 
-#### Log Level
+The logger is exported as a default export. It can be used in other parts of the application as follows:
 
-The log level for the logger is dynamically set based on the environment:
+```javascript
+import Logger from "./logger";
 
-- If the environment is `development`, the log level is set to `debug`.
-- If the environment is not `development`, the log level is set to `warn`.
+// Log an error message
+Logger.error("An error occurred.");
 
-The environment variable `NODE_ENV` is used to determine the current environment. If it's not set, the default environment is set to `development`.
+// Log a warning message
+Logger.warn("A warning occurred.");
 
-#### Colors
+// Log an info message
+Logger.info("An info message.");
 
-The logger utilizes colors to visually distinguish different log levels:
+// Log a debug message
+Logger.debug("A debug message.");
+```
 
-| Level | Color |
-|---|---|
-| `error` | Red |
-| `warn` | Yellow |
-| `info` | Green |
-| `http` | Magenta |
-| `debug` | White |
+### Notes
 
-#### Format
-
-The log messages are formatted to include the timestamp, level, and message content. The format is configured as follows:
-
-- **Timestamp:**  Uses `YYYY-MM-DD HH:mm:ss:ms` format.
-- **Colorize:**  Applies colors to the log levels.
-- **Printf:**  Formats the log message using the provided template.
-
-#### Transports
-
-The logger uses the following transports to write logs:
-
-- **Console:**  Writes logs to the console.
-- **File (error.log):**  Writes error logs to the `error.log` file.
-- **File (all.log):**  Writes all logs to the `all.log` file. 
+- The logger writes error logs to `log/error.log` and all logs to `log/all.log`.
+- The `dotenv` package is used to load environment variables from the `.env` file.
+- The `Environment` enum is used to define the different environments.
