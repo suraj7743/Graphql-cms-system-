@@ -49,7 +49,7 @@ A modern Content Management System (CMS) built with Node.js, TypeScript, Postgre
 
 1. Clone the repository:
 ```bash
-git clone [your-repository-url]
+git clone https://github.com/suraj7743/Graphql-cms-system-.git
 ```
 
 2. Install dependencies:
